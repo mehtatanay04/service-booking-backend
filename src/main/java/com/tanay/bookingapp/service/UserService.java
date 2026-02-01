@@ -1,6 +1,7 @@
 package com.tanay.bookingapp.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.tanay.bookingapp.entity.User;
 import com.tanay.bookingapp.repository.UserRepository;
@@ -18,6 +19,9 @@ public class UserService {
 		if(existingUser != null) {
 			throw new RuntimeException("Email already registered");
 		}
+		
+		BCryptPasswordEncoder encoder  = new BCryptPasswordEncoder();
+		user.setPassword(encoder.encode(user.getPassword()));
 		return userRepository.save(user);
 	}
 }
