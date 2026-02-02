@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tanay.bookingapp.dto.LoginRequestDTO;
 import com.tanay.bookingapp.dto.UserResponseDTO;
 import com.tanay.bookingapp.entity.User;
 import com.tanay.bookingapp.service.UserService;
@@ -27,6 +28,14 @@ public class AuthController {
 				savedUser.getEmail(),
 				savedUser.getRole()
 				);
+	}
+	
+	@PostMapping("/login")
+	
+	public UserResponseDTO login (@RequestBody LoginRequestDTO loginRequest) {
+		User user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+		
+		return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getRole());
 	}
 	
 }

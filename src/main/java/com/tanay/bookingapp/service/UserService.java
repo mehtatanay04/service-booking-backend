@@ -1,7 +1,7 @@
 package com.tanay.bookingapp.service;
 
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.tanay.bookingapp.entity.User;
 import com.tanay.bookingapp.repository.UserRepository;
@@ -19,10 +19,24 @@ public class UserService {
 		if(existingUser != null) {
 			throw new RuntimeException("Email already registered");
 		}
-		
+	
 		BCryptPasswordEncoder encoder  = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(user.getPassword()));
 		return userRepository.save(user);
 	}
+		public User loginUser(String email, String password) {
+			User user = userRepository.findByEmail(email);
+			if (user == null) {
+				throw new RuntimeException("Invalid email or password");
+			}
+			
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			
+			if (!encoder.matches(password, user.getPassword())) {
+				throw new RuntimeException("Invalid email or password");
+			}
+			return user;
+		}
+
 }
 
