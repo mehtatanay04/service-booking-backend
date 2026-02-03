@@ -4,6 +4,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.tanay.bookingapp.entity.User;
+import com.tanay.bookingapp.exception.EmailAlreadyExistsException;
+import com.tanay.bookingapp.exception.InvalidCredentialsException;
 import com.tanay.bookingapp.repository.UserRepository;
 
 @Service
@@ -17,7 +19,7 @@ public class UserService {
 	public User registerUser(User user) {
 		User existingUser = userRepository.findByEmail(user.getEmail());
 		if(existingUser != null) {
-			throw new RuntimeException("Email already registered");
+			throw new EmailAlreadyExistsException("Email already registered");
 		}
 	
 		BCryptPasswordEncoder encoder  = new BCryptPasswordEncoder();
@@ -33,7 +35,7 @@ public class UserService {
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			
 			if (!encoder.matches(password, user.getPassword())) {
-				throw new RuntimeException("Invalid email or password");
+				throw new InvalidCredentialsException("Invalid email or password");
 			}
 			return user;
 		}
