@@ -1,13 +1,14 @@
 package com.tanay.bookingapp.controller;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tanay.bookingapp.dto.LoginRequestDTO;
+import com.tanay.bookingapp.dto.LoginResponseDTO;
 import com.tanay.bookingapp.dto.UserResponseDTO;
 import com.tanay.bookingapp.entity.User;
+import com.tanay.bookingapp.security.JwtUtil;
 import com.tanay.bookingapp.service.UserService;
 
 @RestController
@@ -31,11 +32,25 @@ public class AuthController {
 	}
 	
 	@PostMapping("/login")
-	
-	public UserResponseDTO login (@RequestBody LoginRequestDTO loginRequest) {
-		User user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
-		
-		return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getRole());
+	public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
+
+	User user = userService.loginUser(
+	loginRequest.getEmail(),
+	loginRequest.getPassword()
+	);
+
+	String token = JwtUtil.generateToken(
+	user.getId(),
+	user.getEmail(),
+	user.getRole()
+	);
+
+	return new LoginResponseDTO(
+	token,
+	user.getEmail(),
+	user.getRole()
+	);
 	}
+
 	
 }
