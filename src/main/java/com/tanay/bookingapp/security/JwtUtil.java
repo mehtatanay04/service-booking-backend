@@ -1,6 +1,10 @@
 package com.tanay.bookingapp.security;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
@@ -23,4 +27,19 @@ return Jwts.builder()
 .signWith(key)
 .compact();
 }
+public static Claims validateToken(String token) {
+
+try {
+Jws<Claims> claimsJws = Jwts.parserBuilder()
+.setSigningKey(key)
+.build()
+.parseClaimsJws(token);
+
+return claimsJws.getBody();
+
+} catch (JwtException e) {
+return null;
+}
+}
+
 }
